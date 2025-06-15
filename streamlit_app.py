@@ -586,4 +586,137 @@ with tab4:
             ))
             
             # Trend line
-            trend_line = [a + b
+            trend_line = [a + b * i for i in range(1, 13)]
+            fig.add_trace(go.Scatter(
+                x=months,
+                y=trend_line,
+                mode='lines',
+                name='Trend Line',
+                line=dict(color='red', dash='dash')
+            ))
+            
+            # Forecast
+            forecast_x = [f"F{i-12}" for i in range(13, 19)]
+            fig.add_trace(go.Scatter(
+                x=forecast_x,
+                y=forecast_values,
+                mode='lines+markers',
+                name='Proyeksi',
+                line=dict(color='green')
+            ))
+            
+            fig.update_layout(
+                title='Analisis Penjualan dan Proyeksi',
+                xaxis_title='Periode',
+                yaxis_title='Penjualan (unit)',
+                height=400
+            )
+            st.plotly_chart(fig, use_container_width=True)
+            
+            # Error metrics
+            predicted = [a + b * i for i in range(1, 13)]
+            mae = np.mean(np.abs(np.array(sales_data) - np.array(predicted)))
+            mse = np.mean((np.array(sales_data) - np.array(predicted)) ** 2)
+            rmse = np.sqrt(mse)
+            
+            st.markdown("#### 📏 Akurasi Model")
+            col_acc1, col_acc2, col_acc3 = st.columns(3)
+            with col_acc1:
+                st.metric("MAE", f"{mae:.2f}")
+            with col_acc2:
+                st.metric("MSE", f"{mse:.2f}")
+            with col_acc3:
+                st.metric("RMSE", f"{rmse:.2f}")
+
+# Footer
+st.markdown("---")
+st.markdown("""
+<div style='text-align: center; color: #666; padding: 2rem;'>
+    <h4>🏭 PT TechnoMax Electronics</h4>
+    <p>Operations Research Dashboard - Optimasi Operasional Terintegrasi</p>
+    <p>Dashboard ini menyediakan tools untuk optimasi produksi, manajemen persediaan, analisis antrian, dan perencanaan strategis.</p>
+</div>
+""", unsafe_allow_html=True)
+
+# Additional Information Sidebar
+with st.sidebar:
+    st.markdown("---")
+    st.markdown("### 📚 Petunjuk Penggunaan")
+    
+    with st.expander("📈 Linear Programming"):
+        st.markdown("""
+        - Input data profit dan waktu produksi
+        - Atur batasan sumber daya
+        - Sistem akan menghitung produksi optimal
+        - Lihat utilisasi sumber daya
+        """)
+    
+    with st.expander("📦 EOQ Model"):
+        st.markdown("""
+        - Masukkan data permintaan tahunan
+        - Input biaya pemesanan dan penyimpanan
+        - Sistem menghitung EOQ optimal
+        - Analisis safety stock dan reorder point
+        """)
+    
+    with st.expander("⏱️ Queueing Model"):
+        st.markdown("""
+        - Input tingkat kedatangan dan pelayanan
+        - Sistem harus stabil (μ > λ)
+        - Analisis kinerja sistem antrian
+        - Evaluasi biaya operasional
+        """)
+    
+    with st.expander("🔢 Other Models"):
+        st.markdown("""
+        - **Transportasi**: Optimasi distribusi
+        - **Penugasan**: Alokasi optimal
+        - **Forecasting**: Peramalan permintaan
+        """)
+    
+    st.markdown("---")
+    st.markdown("### 💡 Tips")
+    st.markdown("""
+    - Gunakan data real untuk hasil optimal
+    - Monitor KPI secara berkala
+    - Integrasikan antar model
+    - Update parameter sesuai kondisi
+    """)
+
+# Performance Dashboard Summary
+st.markdown("---")
+st.markdown("## 🎯 Dashboard Summary")
+
+summary_col1, summary_col2, summary_col3, summary_col4 = st.columns(4)
+
+with summary_col1:
+    st.markdown("""
+    <div class="metric-card">
+        <h4>📈 Linear Programming</h4>
+        <p>Optimasi produksi untuk maksimalisasi profit dengan batasan sumber daya</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+with summary_col2:
+    st.markdown("""
+    <div class="metric-card">
+        <h4>📦 EOQ Model</h4>
+        <p>Manajemen persediaan optimal dengan minimalisasi total biaya</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+with summary_col3:
+    st.markdown("""
+    <div class="metric-card">
+        <h4>⏱️ Queueing Model</h4>
+        <p>Analisis kinerja sistem pelayanan dan optimasi kapasitas</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+with summary_col4:
+    st.markdown("""
+    <div class="metric-card">
+        <h4>🔢 Other Models</h4>
+        <p>Model transportasi, penugasan, dan forecasting terintegrasi</p>
+    </div>
+    """, unsafe_allow_html=True)
